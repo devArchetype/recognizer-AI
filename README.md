@@ -1,33 +1,33 @@
 # Recognizer 
 
 Recognizer©<br>
-        <p>It is a project about computer vision and image processing in order to solve
-        problems in a practical and accessible way.
-        This project must solve the school demands that were asked of us.
-        Concepts involved:
-            OMR (Optical Mark Recognition) mark recognizer
-            optica which is a way to recognize marks and markings
-            in documents, by humans.
-            Implementation logic:
-            - Apply perspective transformation
-            - extract the first row of answers
-            - determine which options were checked
-            - repeat the algorithm for each row
-         To begin with, when Processing the selected image, it is important to convert it to grayscale,
-         for a better functioning of the lib
-        Also, it's super important to get, first of all, the edge of the document to apply the
-        perspective transformation
-        Once this is done, to classify the template, it is necessary to apply binarization or delimitation/segmentation
-        With the image binarized (completely black with white outlines), it is necessary to find the outlines again.
-        Therefore, it is necessary to sort the questions from top to bottom, so that the questions are
-        in the order in which the template appears.
-        After ordering the answer sheet from top to bottom, it is important to ensure that the answers are from left to
-        on the right
-        With the template bubbles found, it is necessary to know which one is colored, for that, just see which one is
-        with pixel close to zero, that is, white.
-        Finally, to find the marked answers, you must identify the pixels different from 0, that is,
-        that have some marking. Those that have the highest percentage, must be marked and will be considered,
-        hence, the importance of filling out the card correctly.</p>
+        <p>It is a project about computer vision and image processing in order to solve<br>
+        problems in a practical and accessible way.<br>
+        This project must solve the school demands that were asked of us.<br>
+        Concepts involved:<br>
+            OMR (Optical Mark Recognition) mark recognizer<br>
+            optica which is a way to recognize marks and markings<br>
+            in documents, by humans.<br>
+            Implementation logic:<br>
+            - Apply perspective transformation<br>
+            - extract the first row of answers<br>
+            - determine which options were checked<br>
+            - repeat the algorithm for each row<br>
+         To begin with, when Processing the selected image, it is important to convert it to grayscale,<br>
+         for a better functioning of the lib<br>
+        Also, it's super important to get, first of all, the edge of the document to apply the<br>
+        perspective transformation<br>
+        Once this is done, to classify the template, it is necessary to apply binarization or delimitation/segmentation<br>
+        With the image binarized (completely black with white outlines), it is necessary to find the outlines again.<br>
+        Therefore, it is necessary to sort the questions from top to bottom, so that the questions are<br>
+        in the order in which the template appears.<br>
+        After ordering the answer sheet from top to bottom, it is important to ensure that the answers are from left to<br>
+        on the right<br>
+        With the template bubbles found, it is necessary to know which one is colored, for that, just see which one is<br>
+        with pixel close to zero, that is, white.<br>
+        Finally, to find the marked answers, you must identify the pixels different from 0, that is,<br>
+        that have some marking. Those that have the highest percentage, must be marked and will be considered,<br>
+        hence, the importance of filling out the card correctly.</p><br>
 
 
 <hr>
