@@ -3,7 +3,7 @@
 Recognizer©<br>
         <p>It is a project about computer vision and image processing in order to solve<br>
         problems in a practical and accessible way.<br>
-        This project must solve the school demands that were asked of us.<br>
+        This project must solve the school demands that were asked of us.<br><br>
         Concepts involved:<br>
         &#09;    OMR (Optical Mark Recognition) mark recognizer<br>
         &#09;    optica which is a way to recognize marks and markings<br>
@@ -12,7 +12,8 @@ Recognizer©<br>
         &#09;   - Apply perspective transformation<br>
        &#09;     - extract the first row of answers<br>
         &#09;    - determine which options were checked<br>
-        &#09;    - repeat the algorithm for each row<br>
+        &#09;    - repeat the algorithm for each row
+        <br><br>
          To begin with, when Processing the selected image, it is important to convert it to grayscale,<br>
          for a better functioning of the lib<br>
         Also, it's super important to get, first of all, the edge of the document to apply the<br>
