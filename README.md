@@ -30,7 +30,11 @@ Recognizer©<br>
         that have some marking. Those that have the highest percentage, must be marked and will be considered,<br>
         hence, the importance of filling out the card correctly.</p><br>
 
+<br>
 
+![image](https://user-images.githubusercontent.com/88283829/212799817-bc727cc6-e35a-4ba7-a974-0f44461d27f1.png)
+
+<br>
 <hr>
 
 Note: Some processing is performed by: <br>
