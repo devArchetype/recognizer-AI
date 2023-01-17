@@ -5,14 +5,14 @@ Recognizer©<br>
         problems in a practical and accessible way.<br>
         This project must solve the school demands that were asked of us.<br>
         Concepts involved:<br>
-            OMR (Optical Mark Recognition) mark recognizer<br>
-            optica which is a way to recognize marks and markings<br>
-            in documents, by humans.<br>
-            Implementation logic:<br>
-            - Apply perspective transformation<br>
-            - extract the first row of answers<br>
-            - determine which options were checked<br>
-            - repeat the algorithm for each row<br>
+        &#09;    OMR (Optical Mark Recognition) mark recognizer<br>
+        &#09;    optica which is a way to recognize marks and markings<br>
+         &#09;   in documents, by humans.<br>
+         &#09;   Implementation logic:<br>
+        &#09;   - Apply perspective transformation<br>
+       &#09;     - extract the first row of answers<br>
+        &#09;    - determine which options were checked<br>
+        &#09;    - repeat the algorithm for each row<br>
          To begin with, when Processing the selected image, it is important to convert it to grayscale,<br>
          for a better functioning of the lib<br>
         Also, it's super important to get, first of all, the edge of the document to apply the<br>
