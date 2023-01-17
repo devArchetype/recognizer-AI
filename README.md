@@ -1,7 +1,7 @@
 # Recognizer 
 
-Recognizer©
-        It is a project about computer vision and image processing in order to solve
+Recognizer©<br>
+        <p>It is a project about computer vision and image processing in order to solve
         problems in a practical and accessible way.
         This project must solve the school demands that were asked of us.
         Concepts involved:
@@ -27,7 +27,7 @@ Recognizer©
         with pixel close to zero, that is, white.
         Finally, to find the marked answers, you must identify the pixels different from 0, that is,
         that have some marking. Those that have the highest percentage, must be marked and will be considered,
-        hence, the importance of filling out the card correctly.
+        hence, the importance of filling out the card correctly.</p>
 
 
 <hr>
