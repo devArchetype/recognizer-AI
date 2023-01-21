@@ -1,7 +1,9 @@
 import base64
+import pickle
+
 import cv2  # pip install opencv-python
 import imutils
-from typing import Any, Dict
+from typing import Any, Dict, List, Tuple
 import numpy as np
 from imutils import contours
 from platform import python_version
@@ -13,6 +15,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import BaseModel
+
 print(f"This was made in python 3.10.5")
 print(f"Your python version is: {python_version()}")
 print("REQUIREMENTS:")
@@ -73,6 +76,12 @@ class TheRecognizer:
     """
 
     APP = FastAPI()  # pip install "uvicorn[standard]" e pip install fastapi
+
+    # posicoes
+    options: list[hex] = [
+        0x10, 0x11, 0x12,
+        0x13, 0x14
+    ]
 
     def __init__(self, image_path: str, question_number: int) -> None:
         """
@@ -159,7 +168,7 @@ class TheRecognizer:
             for index, contor in enumerate(contours_):
                 mask = np.zeros(self.__apply_perspective().shape, dtype="uint8")
                 cv2.drawContours(mask, [contor], -1, 255, -1)
-                #self.view_test(cv2.drawContours(mask, [contor], -1, 0, -1))
+                # self.view_test(cv2.drawContours(mask, [contor], -1, 0, -1))
                 # aplica mascara e conta o numero de nao zeros
                 mask = cv2.bitwise_and(self.__apply_perspective(), self.__apply_perspective(), mask=mask)
                 total_non_zeros = cv2.countNonZero(mask)
@@ -171,13 +180,121 @@ class TheRecognizer:
             count += 1
         return answers
 
+    def get_retangle(self, img) -> Tuple:
+        image_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        image_thresh = cv2.adaptiveThreshold(image_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11,
+                                             12)
+
+        cv2.medianBlur(image_thresh, 5)
+
+        kernel = np.ones((2, 2), np.uint8)
+        image_dilate = cv2.dilate(image_thresh, kernel)
+        contours, _ = cv2.findContours(image_dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        max_contourn = max(contours, key=cv2.contourArea)
+
+        x, y, w, h = cv2.boundingRect(max_contourn)
+        bbox = [x, y, w, h]
+
+        cv2.rectangle(image_dilate, (x, y), (x + w, y + h), (255, 0, 0), 4)
+        # view(image_dilate)
+        return img, bbox
+
+    def make_pickle_file(self, image) -> List:
+        """Executar primeiro, apenas uma vez!"""
+        spaces: list = list()
+
+        # 50 posicoes na imagem
+        for marks in range(50):
+            space = cv2.selectROI('mark the spaces', image, False)
+            cv2.destroyWindow('mark the spaces')
+            spaces.append(space)
+
+            for x, y, width, height in spaces:
+                cv2.rectangle(image, (x, y), (x + width, y + height), (0, 0, 255), 3)
+
+        return spaces
+
+    def save_to_pickle_file(self, image) -> None:
+        spaces = self.make_pickle_file(image)
+        with open('positions.pkl', 'wb') as file:
+            pickle.dump(spaces, file)
+
+    def finder(self, img) -> Dict:
+        final_answers = list()
+        path = img
+        img = cv2.imread(img)
+        img = cv2.resize(img, (500, 600))
+
+        # executar uma vez, se nao existir arquivo.pkl
+        # save_to_pickle_file(img)
+
+        # img = img[19: 585, 10: 470]
+        gabarito, bbox = self.get_retangle(img)
+
+        image_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        ret, image_thresh = cv2.threshold(image_gray, 70, 255, cv2.THRESH_BINARY_INV)
+
+        kernel = np.ones((5, 5), np.uint8)
+
+        # as seguintes configurações,apresentaram erro.Ainda não identifiquei o motivo.
+        # img_dilation = cv2.dilate(imgTh, kernel, iterations=1)
+        # cv2.rectangle(imgTh, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), (0, 255, 0), 3)
+        # area = make_pickle_file(img)
+        with open('positions.pkl', 'rb') as file:
+            area = pickle.load(file)
+
+        # possivel solucao para variação de cores
+        variable = 200
+        answers = []
+        for id, bubbles in enumerate(area):
+            x = int(bubbles[0])
+            y = int(bubbles[1])
+            _width = int(bubbles[2])
+            _height = int(bubbles[3])
+            cv2.rectangle(img, (x, y), (x + _width, y + _height), (0, 0, 0), 2)
+            cv2.rectangle(image_thresh, (x, y), (x + _width, y + _height), (255, 255, 255), 1)
+            camp = image_thresh[y:y + _height, x:x + _width]
+            height, width = camp.shape[:2]
+            size = height * width
+            black_target = cv2.countNonZero(camp)
+
+            if black_target > 500:  # pegar o maior até entao
+                variable = 500
+
+            percent = round((black_target / size) * 100, 2)
+            # print(percentual)
+
+            # maior que 10, mediante a testes.[RESOLVIVEL APENAS A BASE DE TESTES]
+            if percent >= 10:
+                cv2.rectangle(img, (x, y), (x + _width, y + _height), (0, 0, 255), 2)
+                answers.append(area[id])
+                # view(img)
+        i = 0
+        for resp in answers:
+            for camp in area:
+                if resp == camp:
+                    if chr(int(f'{self.options[i]}', 10) + 49) is not None:
+                        final_answers.append(chr(int(f'{self.options[i]}', 10) + 49))
+                i += 1
+                if i == 5:
+                    i = 0
+        keys = list(range(1, len(final_answers) + 1))
+        json_answers = dict()
+        json_answers['student_registration'] = self.capture_the_student_registration(path)
+        for index, content in enumerate(final_answers):
+            json_answers[keys[index]] = content
+        print(json_answers)
+        return json_answers
+
     def start_reconnaissance(self) -> Dict:
         return self.__find_appointment()
 
     @staticmethod
     def capture_the_student_registration(path_from_image: str) -> int:
         with Image.open(path_from_image) as img:
-            return int(pytesseract.image_to_string(img))
+            print(pytesseract.image_to_string(img).split(' ')[3])
+            # return int(pytesseract.image_to_string(img))
+            return pytesseract.image_to_string(img).split(' ')[3]
 
     @staticmethod
     @APP.post('/recognizer')
@@ -191,8 +308,26 @@ class TheRecognizer:
         image_decode_base64 = base64.b64decode(image.image)
         with open(f'images_to_scan/recognizer_image.jpeg', 'wb') as img:
             img.write(image_decode_base64)
-        recognizer = TheRecognizer("images_to_scan/recognizer_image.jpeg", 5)  # 525x700  images teste4 e gab (preferível png)
+        recognizer = TheRecognizer("images_to_scan/recognizer_image.jpeg",
+                                   5)  # 525x700  images teste4 e gab (preferível png)
         json_compatible = jsonable_encoder(recognizer.start_reconnaissance())
+        return JSONResponse(content=json_compatible)
+
+    @staticmethod
+    @APP.post('/therecognizer')
+    def create_a_endpoint_to_server_application(image: ImageBody) -> JSONResponse:
+        """
+        Renderiza um endpoint para a aplicação
+        documentação em: /docs
+        to run:  uvicorn Recognizer:TheRecognizer.APP --reload
+        :return: JSONResponse
+        """
+        image_decode_base64 = base64.b64decode(image.image)
+        with open(f'images_to_scan/recognizer_image2.jpeg', 'wb') as img:
+            img.write(image_decode_base64)
+        recognizer = TheRecognizer("images_to_scan/recognizer_image2.jpeg",
+                                   10)  # 525x700  images teste4 e gab (preferível png)
+        json_compatible = jsonable_encoder(recognizer.finder("images_to_scan/recognizer_image2.jpeg"))
         return JSONResponse(content=json_compatible)
 
     @APP.get('/recognizer')
@@ -203,15 +338,16 @@ class TheRecognizer:
         to run:  uvicorn Recognizer:TheRecognizer.APP --reload
         :return: JSONResponse
         """
-        json_compatible = jsonable_encoder({"message":"Por favor, use o método post com a imagem no body. img=image"})
+        json_compatible = jsonable_encoder({"message": "Por favor, use o método post com a imagem no body. img=image"})
         return JSONResponse(content=json_compatible)
 
     @APP.exception_handler(StarletteHTTPException)
     def page_not_found(request: Request, exc: Any) -> JSONResponse:
         return JSONResponse(
             status_code=404,
-            content={f"Recognizer© says: ERROR [{str(exc.detail)}]": "Opa! Você tentou acessar um endereço inválido ou houve um problema interno"
-                                ". Por favor,tente: /recognizer"}
+            content={f"Recognizer© says: ERROR [{str(exc.detail)}]": "Opa! Você tentou acessar um endereço inválido "
+                                                                     "ou houve um problema interno "
+                                                                     ". Por favor,tente: /recognizer"}
         )
 
     def __repr__(self) -> str:
@@ -227,3 +363,5 @@ if __name__ == '__main__':
     e acessar a url: http://endereço:8000/recognizer
     A documentação desse endpoint está em /docs
     """
+    recog = TheRecognizer('best_tests/gabarito.jpeg', 10)
+    recog.finder('best_tests/gabarito.jpeg')
