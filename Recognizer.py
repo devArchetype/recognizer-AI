@@ -1,10 +1,10 @@
 import base64
 import pickle
-
 import cv2  # pip install opencv-python
 import imutils
-from typing import Any, Dict, List, Tuple
 import numpy as np
+from typing import Any, Dict, List, Tuple
+from interface import RecognizerInterface
 from imutils import contours
 from platform import python_version
 from imutils.perspective import four_point_transform
@@ -33,7 +33,7 @@ class ImageBody(BaseModel):
 pytesseract.pytesseract.tesseract_cmd = r'./Tesseract-OCR/tesseract'  # executable
 
 
-class TheRecognizer:
+class TheRecognizer(RecognizerInterface):
     """
         Recognizer©
         É um projeto sobre visão computacional e processamento de imagens com o intuito de resolver
