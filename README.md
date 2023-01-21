@@ -55,4 +55,9 @@ Because, Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focu
        
        > uvicorn Recognizer:TheRecognizer.APP --reload 
 
+
+### Response:
+
+![image](https://user-images.githubusercontent.com/88283829/213879047-16575227-87a9-42a2-9542-066720321e49.png)
+
        
