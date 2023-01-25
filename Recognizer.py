@@ -267,7 +267,7 @@ class TheRecognizer(RecognizerInterface):
 
             # maior que 10, mediante a testes.[RESOLVIVEL APENAS A BASE DE TESTES]
             # print(percent)
-            self.view_test(img)
+            # self.view_test(img)
             if percent >= 17:
                 cv2.rectangle(img, (x, y), (x + _width, y + _height), (0, 0, 255), 2)
                 answers.append(area[id])
