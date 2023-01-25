@@ -93,8 +93,9 @@ class TheRecognizer(RecognizerInterface):
         self.__STUDENT_ID = self.capture_the_student_registration(self.__image_path)
 
     def view_test(self, image) -> None:
-        """ Apenas visualiza o resultado intermediário """
-        cv2.imshow('view_image.jpg', image)
+        """ Apenas visualiza o resultado inter       mediário """
+        img = cv2.resize(image, (500, 600))
+        cv2.imshow('view_image.jpg', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -260,15 +261,17 @@ class TheRecognizer(RecognizerInterface):
 
             if black_target > 500:  # pegar o maior até entao
                 variable = 500
-
+            #print(black_target)
             percent = round((black_target / size) * 100, 2)
             # print(percentual)
 
             # maior que 10, mediante a testes.[RESOLVIVEL APENAS A BASE DE TESTES]
-            if percent >= 10:
+            # print(percent)
+            self.view_test(img)
+            if percent >= 17:
                 cv2.rectangle(img, (x, y), (x + _width, y + _height), (0, 0, 255), 2)
                 answers.append(area[id])
-                # view(img)
+
         i = 0
         for resp in answers:
             for camp in area:
@@ -282,6 +285,7 @@ class TheRecognizer(RecognizerInterface):
         json_answers = dict()
         json_answers['student_registration'] = self.capture_the_student_registration(path)
         for index, content in enumerate(final_answers):
+            print(content, index, keys[index])
             json_answers[keys[index]] = content
         print(json_answers)
         return json_answers
@@ -292,9 +296,8 @@ class TheRecognizer(RecognizerInterface):
     @staticmethod
     def capture_the_student_registration(path_from_image: str) -> int:
         with Image.open(path_from_image) as img:
-            print(pytesseract.image_to_string(img).split(' ')[3])
             # return int(pytesseract.image_to_string(img))
-            return pytesseract.image_to_string(img).split(' ')[3]
+            return pytesseract.image_to_string(img).split(' ')[0].split('\n')[0]
 
     @staticmethod
     @APP.post('/recognizer')
@@ -361,7 +364,7 @@ if __name__ == '__main__':
     Logo, basta fazer:
     uvicorn Recognizer:TheRecognizer.APP --reload 
     e acessar a url: http://endereço:8000/recognizer
-    A documentação desse endpoint está em /docs
+    A documentação desse endpoint está        em /     docs
     """
     recog = TheRecognizer('best_tests/gabarito.jpeg', 10)
-    recog.finder('best_tests/gabarito.jpeg')
+    recog.finder('images_to_scan/n_test.jpeg')
