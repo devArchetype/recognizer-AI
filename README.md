@@ -60,4 +60,7 @@ Because, Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focu
 
 ![image](https://user-images.githubusercontent.com/88283829/213879047-16575227-87a9-42a2-9542-066720321e49.png)
 
-       
+### Docs in /docs route:
+
+![image](https://user-images.githubusercontent.com/88283829/214697191-5bf83453-57f9-48b6-9ba9-ccc1b4270dbe.png)
+
