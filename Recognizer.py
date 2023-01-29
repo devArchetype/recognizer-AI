@@ -1,5 +1,7 @@
 import base64
 import pickle
+import re
+
 import cv2  # pip install opencv-python
 import imutils
 import numpy as np
@@ -18,8 +20,7 @@ from pydantic import BaseModel
 
 print(f"This was made in python 3.10.5")
 print(f"Your python version is: {python_version()}")
-print("REQUIREMENTS:")
-print("Image with a big dark background")
+STUDENT_ID = 0
 
 
 class ImageBody(BaseModel):
@@ -263,12 +264,12 @@ class TheRecognizer(RecognizerInterface):
                 variable = 500
             #print(black_target)
             percent = round((black_target / size) * 100, 2)
-            # print(percentual)
+            # print(percent    ual)
 
             # maior que 10, mediante a testes.[RESOLVIVEL APENAS A BASE DE TESTES]
-            # print(percent)
-            # self.view_test(img)
-            if percent >= 17:
+            #print(percent)
+            #self.view_test(img)
+            if percent >= 20:
                 cv2.rectangle(img, (x, y), (x + _width, y + _height), (0, 0, 255), 2)
                 answers.append(area[id])
 
@@ -283,11 +284,10 @@ class TheRecognizer(RecognizerInterface):
                     i = 0
         keys = list(range(1, len(final_answers) + 1))
         json_answers = dict()
-        json_answers['student_registration'] = self.capture_the_student_registration(path)
+        json_answers['student_registration'] = STUDENT_ID
+
         for index, content in enumerate(final_answers):
-            print(content, index, keys[index])
             json_answers[keys[index]] = content
-        print(json_answers)
         return json_answers
 
     def start_reconnaissance(self) -> Dict:
@@ -295,12 +295,22 @@ class TheRecognizer(RecognizerInterface):
 
     @staticmethod
     def capture_the_student_registration(path_from_image: str) -> int:
+        global STUDENT_ID
         with Image.open(path_from_image) as img:
             # return int(pytesseract.image_to_string(img))
-            return pytesseract.image_to_string(img).split(' ')[0].split('\n')[0]
+           # print(re.search('[0-9]+', str(pytesseract.image_to_string(img)).split('-')[1].split(' ')[0]))
+            try:
+                regex = re.findall('[0-9]+', str(pytesseract.image_to_string(img)))
+                for n in regex:
+                    if len(n) >= 6:
+                        STUDENT_ID = n
+                return int(STUDENT_ID)
+            except IndexError as e:
+                pass
+            return 0
 
     @staticmethod
-    @APP.post('/recognizer')
+    # @APP.post('/recognizer') obsolete
     def create_a_endpoint_to_server_application(image: ImageBody) -> JSONResponse:
         """
         Renderiza um endpoint para a aplicação
@@ -317,6 +327,7 @@ class TheRecognizer(RecognizerInterface):
         return JSONResponse(content=json_compatible)
 
     @staticmethod
+    @APP.post('/recognizer')
     @APP.post('/therecognizer')
     def create_a_endpoint_to_server_application(image: ImageBody) -> JSONResponse:
         """
@@ -363,8 +374,8 @@ if __name__ == '__main__':
     mais rápidas do python, no que diz respeito a requisições HTTP.
     Logo, basta fazer:
     uvicorn Recognizer:TheRecognizer.APP --reload 
-    e acessar a url: http://endereço:8000/recognizer
+    e acessar a url: http://endereço:8000/recognizer             
     A documentação desse endpoint está        em /     docs
     """
-    recog = TheRecognizer('best_tests/gabarito.jpeg', 10)
-    recog.finder('images_to_scan/n_test.jpeg')
+    recog = TheRecognizer('images_to_scan/final2.jpeg', 10)
+    recog.finder('images_to_scan/final2.jpeg')
