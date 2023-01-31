@@ -45,6 +45,14 @@ Because, Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focu
 
 <hr>  
 
+
+### 👥  Entidades:
+
+
+        class ImageBody(BaseModel):
+             image: str
+    
+
 ### 🐍 Python version:
 
         3.10.5
