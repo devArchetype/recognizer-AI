@@ -55,7 +55,7 @@ Because, Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focu
 ### 📒 Diagrama de classes:
 
 
-        ![image](https://user-images.githubusercontent.com/88283829/215636326-30ebee7f-667c-4364-b316-6aa3954ce1c8.png)
+ ![image](https://user-images.githubusercontent.com/88283829/215636326-30ebee7f-667c-4364-b316-6aa3954ce1c8.png)
 
 
 ### 🐍 Python version:
