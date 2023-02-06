@@ -71,6 +71,8 @@ Because, Tesseract 4 adds a new neural net (LSTM) based OCR engine which is focu
        > pip install -r requirements
        
        > uvicorn Recognizer:TheRecognizer.APP --reload 
+       
+       or local: python recognizer_ifmg_versao_beta_01_kk.py
 
 
 ### Response:
